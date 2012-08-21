@@ -2,8 +2,8 @@
 function feed2pc($feed,$update_hours=5){
 	$update_seconds=$update_hours*3600;
 	//error_reporting(2147483647);
-	$cach_file=str_replace('/','-',$feed);
-	if ((!file_exists($cach_file)) || ((time()-filemtime($cach_file)>$update_seconds))){
+	$cache_file='cache/'.str_replace('/','-',$feed);
+	if ((!file_exists($cache_file)) || ((time()-filemtime($cache_file)>$update_seconds))){
 		$feed_str=file_get_contents($feed);
 		$sxe = new SimpleXMLElement($feed_str);
 		foreach ($sxe->channel->item as $item){
@@ -25,12 +25,12 @@ function feed2pc($feed,$update_hours=5){
 			$enclosure->addAttribute('type','mp3');
 		}
 		$xml=$sxe->asXML();
-		file_put_contents($cach_file,$xml);
+		file_put_contents($cache_file,$xml);
 		echo $xml;
 	}
 	else {
 		ob_clean();
     		flush();
-	    	readfile($cach_file);
+	    	readfile($cache_file);
 	    }
 }
