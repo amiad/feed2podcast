@@ -47,6 +47,7 @@ class PodcastFeedCreator {
 	}
 	private function save_cache($feed,$xml){
 		$cache_file='cache/'.md5($feed);
+		if(!file_exists('cache')) mkdir('cache');
 		file_put_contents($cache_file,$xml);
 	}
 }
