@@ -11,7 +11,7 @@ class PodcastFeedCreator {
     		if ($this->get_cache()) return;
         	else {
         		header('Content-type: application/xml');
-        		echo $this->processFeed($this->feed,$this->type);
+        		echo $this->processFeed();
         	}
         }
         
@@ -23,7 +23,9 @@ class PodcastFeedCreator {
         	$this->update_hours=$update_hours;
         }
         
-	public function processFeed($feed,$type) {
+	public function processFeed() {
+		$feed=$this->feed;
+		$type=$this->type;
 		$feed_str=file_get_contents($feed);
 		$sxe = new SimpleXMLElement($feed_str);
 		foreach ($sxe->channel->item as $item) {
@@ -33,7 +35,7 @@ class PodcastFeedCreator {
 			$enclosure->addAttribute('type',$type);
 		}
 		$xml=$sxe->asXML();
-		$this->save_cache($feed,$xml);
+		$this->save_cache($xml);
 		return $xml;
 	}
     
@@ -64,8 +66,8 @@ class PodcastFeedCreator {
 		}
 		else return false;
 	}
-	private function save_cache($feed,$xml){
-		$cache_file='cache/'.md5($feed);
+	private function save_cache($xml){
+		$cache_file='cache/'.md5($this->feed);
 		if(!file_exists('cache')) mkdir('cache');
 		file_put_contents($cache_file,$xml);
 	}
