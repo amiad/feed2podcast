@@ -2,7 +2,7 @@
 
 class PodcastFeedCreator {
 	public function __construct($feed,$update_hours=5,$type='mp3') {
-        	if ($this->get_cache($feed,$update_hours) return;
+        	if ($this->get_cache($feed,$update_hours)) return;
         	else echo $this->processFeed($feed,$type);
     	}
     
