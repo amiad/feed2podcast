@@ -1,14 +1,28 @@
 <?php
 
 class PodcastFeedCreator {
-	public function __construct($feed,$update_hours=5,$type='mp3') {
-        	if ($this->get_cache($feed,$update_hours)) return;
-        	else {
-        		echo $this->processFeed($feed,$type);
-        		header('Content-type: application/xml');
-        	}
+	private $update_hours=5;
+	private $type='mp3';
+	public function __construct($feed) {
+        	$this->feed=$feed;
     	}
-    
+    	
+    	public function getFeed(){
+    		if ($this->get_cache()) return;
+        	else {
+        		header('Content-type: application/xml');
+        		echo $this->processFeed($this->feed,$this->type);
+        	}
+        }
+        
+        public function setType($type){
+        	$this->type=$type;
+        }
+        
+        public function setUpdateHours($update_hours){
+        	$this->update_hours=$update_hours;
+        }
+        
 	public function processFeed($feed,$type) {
 		$feed_str=file_get_contents($feed);
 		$sxe = new SimpleXMLElement($feed_str);
@@ -37,8 +51,9 @@ class PodcastFeedCreator {
 			}
         	}
 	}
-	private function get_cache($feed,$update_hours){
-    		$update_seconds=$update_hours*3600;
+	private function get_cache(){
+		$feed=$this->feed;
+    		$update_seconds=$this->update_hours*3600;
     		$cache_file='cache/'.md5($feed);
 		if ((file_exists($cache_file)) && ((time()-filemtime($cache_file)<$update_seconds))){
 			ob_clean();
