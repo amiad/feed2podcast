@@ -3,7 +3,10 @@
 class PodcastFeedCreator {
 	public function __construct($feed,$update_hours=5,$type='mp3') {
         	if ($this->get_cache($feed,$update_hours)) return;
-        	else echo $this->processFeed($feed,$type);
+        	else {
+        		echo $this->processFeed($feed,$type);
+        		header('Content-type: application/xml');
+        	}
     	}
     
 	public function processFeed($feed,$type) {
@@ -40,6 +43,7 @@ class PodcastFeedCreator {
 		if ((file_exists($cache_file)) && ((time()-filemtime($cache_file)<$update_seconds))){
 			ob_clean();
     			flush();
+    			header('Content-type: application/xml');
 	    		readfile($cache_file);
 	    		return true;
 		}
