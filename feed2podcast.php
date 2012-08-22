@@ -3,6 +3,7 @@
 class PodcastFeedCreator {
 	private $update_hours=5;
 	private $type='mp3';
+	private $image;
 	public function __construct($feed) {
         	$this->feed=$feed;
     	}
@@ -23,6 +24,10 @@ class PodcastFeedCreator {
         	$this->update_hours=$update_hours;
         }
         
+        public function setImage($image){
+        	$this->image=$image;
+        }
+        
 	public function processFeed() {
 		$feed=$this->feed;
 		$type=$this->type;
@@ -33,6 +38,12 @@ class PodcastFeedCreator {
 			$enclosure=$item->addChild('enclosure');
 			$enclosure->addAttribute('url',$file);
 			$enclosure->addAttribute('type',$type);
+		}
+		if($this->image) {
+			$image=$sxe->channel->addChild('image');
+			$image->addChild('url',$this->image);
+			$image->addChild('title',$sxe->channel->title.' Logo');
+			$image->addChild('link',$sxe->channel->link);
 		}
 		$xml=$sxe->asXML();
 		$this->save_cache($xml);
