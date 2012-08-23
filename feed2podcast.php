@@ -65,7 +65,7 @@ class PodcastFeedCreator {
 		for ($i = 0; $i < $hrefs->length; $i++) {
 			$href = $hrefs->item($i);
 			$url = $href->getAttribute('href');
-			if(substr($url,-4)=='.'.$type) {
+			if(strtolower(substr($url,-4))=='.'.$type) {
 				return $url;
 			}
 		}
