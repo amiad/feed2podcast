@@ -4,30 +4,35 @@ class PodcastFeedCreator {
 	private $update_hours=5;
 	private $type='mp3';
 	private $image;
+	private $delStr;
 	public function __construct($feed) {
-        	$this->feed=$feed;
+		$this->feed=$feed;
     	}
     	
     	public function getFeed(){
     		if ($this->get_cache()) return;
-        	else {
-        		header('Content-type: application/xml');
-        		echo $this->processFeed();
-        	}
-        }
-        
-        public function setType($type){
-        	$this->type=$type;
-        }
-        
-        public function setUpdateHours($update_hours){
-        	$this->update_hours=$update_hours;
-        }
-        
-        public function setImage($image){
-        	$this->image=$image;
-        }
-        
+		else {
+			header('Content-type: application/xml');
+			echo $this->processFeed();
+		}
+	}
+	
+	public function setType($type){
+		$this->type=$type;
+	}
+	
+	public function setUpdateHours($update_hours){
+		$this->update_hours=$update_hours;
+	}
+	
+	public function setImage($image){
+		$this->image=$image;
+ 	}
+	
+	public function setDelStr($str){
+		$this->delStr=$str;
+	}
+	
 	public function processFeed() {
 		$feed=$this->feed;
 		$type=$this->type;
@@ -35,6 +40,7 @@ class PodcastFeedCreator {
 		$sxe = new SimpleXMLElement($feed_str);
 		foreach ($sxe->channel->item as $item) {
 			$file = $this->findEnclosureLink($item->link,$type);
+			if($this->delStr) $file=str_replace($this->delStr,'',$file);
 			$enclosure=$item->addChild('enclosure');
 			$enclosure->addAttribute('url',$file);
 			$enclosure->addAttribute('type',$type);
@@ -51,7 +57,7 @@ class PodcastFeedCreator {
 	}
     
 	public function findEnclosureLink($item,$type) {
-        	$page=file_get_contents($item);
+		$page=file_get_contents($item);
 		$dom = new DOMDocument();
 		@$dom->loadHTML($page);
 		$xpath = new DOMXPath($dom);
@@ -62,7 +68,7 @@ class PodcastFeedCreator {
 			if(substr($url,-4)=='.'.$type) {
 				return $url;
 			}
-        	}
+		}
 	}
 	private function get_cache(){
 		$feed=$this->feed;
