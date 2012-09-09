@@ -8,10 +8,12 @@ class PodcastFeedCreator extends Convert2Podcast{
 		$sxe = new SimpleXMLElement($feed_str);
 		foreach ($sxe->channel->item as $item) {
 			$file = $this->findEnclosureLink($item->link,$type);
-			if($this->delStr) $file=str_replace($this->delStr,'',$file);
-			$enclosure=$item->addChild('enclosure');
-			$enclosure->addAttribute('url',$file);
-			$enclosure->addAttribute('type',$this->mime($this->inType($file)));
+			if($this->inType($file)){
+				if($this->delStr) $file=str_replace($this->delStr,'',$file);
+				$enclosure=$item->addChild('enclosure');
+				$enclosure->addAttribute('url',$file);
+				$enclosure->addAttribute('type',$this->mime($this->inType($file)));
+			}
 		}
 		$sxe=$this->addImage($sxe);
 		$xml=$sxe->asXML();
@@ -34,4 +36,3 @@ class PodcastFeedCreator extends Convert2Podcast{
 		}
 	}
 }
-
