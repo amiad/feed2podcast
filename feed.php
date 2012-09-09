@@ -9,6 +9,7 @@ $updateHours=5; //How often the cache is updated (in hours), default 5
 $image=''; //podcast logo url, default none;
 $delStr=''; // delete substring in file url. for sites that redirect the download via other
 
+/* not touch */
 require('feed2podcast.php');
 $feed2podcast = new PodcastFeedCreator($feed);
 

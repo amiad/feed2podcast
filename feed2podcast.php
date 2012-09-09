@@ -1,40 +1,8 @@
 <?php
-
-class PodcastFeedCreator {
-	private $update_hours=5;
-	private $type='mp3';
-	private $image;
-	private $delStr;
-	public function __construct($feed) {
-		$this->feed=$feed;
-    	}
-    	
-    	public function getFeed(){
-    		if ($this->get_cache()) return;
-		else {
-			header('Content-type: application/xml');
-			echo $this->processFeed();
-		}
-	}
-	
-	public function setType($type){
-		$this->type=$type;
-	}
-	
-	public function setUpdateHours($update_hours){
-		$this->update_hours=$update_hours;
-	}
-	
-	public function setImage($image){
-		$this->image=$image;
- 	}
-	
-	public function setDelStr($str){
-		$this->delStr=$str;
-	}
-	
+require('convert2podcast.php');
+class PodcastFeedCreator extends Convert2Podcast{
 	public function processFeed() {
-		$feed=$this->feed;
+		$feed=$this->source;
 		$type=$this->type;
 		$feed_str=file_get_contents($feed);
 		$sxe = new SimpleXMLElement($feed_str);
@@ -43,14 +11,9 @@ class PodcastFeedCreator {
 			if($this->delStr) $file=str_replace($this->delStr,'',$file);
 			$enclosure=$item->addChild('enclosure');
 			$enclosure->addAttribute('url',$file);
-			$enclosure->addAttribute('type',$type);
+			$enclosure->addAttribute('type',$this->mime($this->inType($file)));
 		}
-		if($this->image) {
-			$image=$sxe->channel->addChild('image');
-			$image->addChild('url',$this->image);
-			$image->addChild('title',$sxe->channel->title.' Logo');
-			$image->addChild('link',$sxe->channel->link);
-		}
+		$sxe=$this->addImage($sxe);
 		$xml=$sxe->asXML();
 		$this->save_cache($xml);
 		return $xml;
@@ -65,28 +28,10 @@ class PodcastFeedCreator {
 		for ($i = 0; $i < $hrefs->length; $i++) {
 			$href = $hrefs->item($i);
 			$url = $href->getAttribute('href');
-			if(strtolower(substr($url,-4))=='.'.$type) {
+			if($this->inType($url)) {
 				return $url;
 			}
 		}
-	}
-	private function get_cache(){
-		$feed=$this->feed;
-    		$update_seconds=$this->update_hours*3600;
-    		$cache_file='cache/'.md5($feed);
-		if ((file_exists($cache_file)) && ((time()-filemtime($cache_file)<$update_seconds))){
-			ob_clean();
-    			flush();
-    			header('Content-type: application/xml');
-	    		readfile($cache_file);
-	    		return true;
-		}
-		else return false;
-	}
-	private function save_cache($xml){
-		$cache_file='cache/'.md5($this->feed);
-		if(!file_exists('cache')) mkdir('cache');
-		file_put_contents($cache_file,$xml);
 	}
 }
 
