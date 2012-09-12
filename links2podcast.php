@@ -1,7 +1,7 @@
 <?php
 require('convert2podcast.php');
 class PodcastCreatorFromLinks extends Convert2Podcast{
-	private $delType,$title,$desc,$ExcludeLink;
+	private $delType=true,$title,$desc,$ExcludeLink;
     	
 	public function setDelStr($str){
 		$this->delStr=$str;
@@ -40,14 +40,14 @@ class PodcastCreatorFromLinks extends Convert2Podcast{
 			$file = $link['url'];
 			if($this->delStr) $file=str_replace($this->delStr,'',$file);
 			if(strpos($file,'http://')!==0) $file=$page.'/'.$file;
-			if($this->delType) $link['name']=str_replace('.'.$this->type,'',$link['name']);
+			if($this->delType) $link['name']=str_replace('.'.$link['type'],'',$link['name']);
 			$item->addChild('title',$link['name']);
 			$item->addChild('description',$link['name']);
 			$item->addChild('link',$file);
 			$item->addChild('guid',$file);
 			$enclosure=$item->addChild('enclosure');
 			$enclosure->addAttribute('url',$file);
-			$enclosure->addAttribute('type',$link['type']);
+			$enclosure->addAttribute('type',$this->mime($link['type']));
 		}
 		$xml=$sxe->asXML();
 		$this->save_cache($xml);
@@ -65,8 +65,7 @@ class PodcastCreatorFromLinks extends Convert2Podcast{
 			$name=$this->get_inner_html($href);
 			$file_type=$this->inType($url);
 			if($file_type) {
-				$mime=$this->mime($file_type);
-				$links[]=array('name'=>$name,'url'=>$url,'type'=>$mime);
+				$links[]=array('name'=>$name,'url'=>$url,'type'=>$file_type);
 			}
 		}
 		return $links;
