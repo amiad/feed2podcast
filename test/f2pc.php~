@@ -1,5 +1,5 @@
 <?php
-require('../core/feed2podcast.php');
+require('../feed2podcast.php');
 $feed2podcast = new PodcastFeedCreator('test.rss');
 
 /* optional */
