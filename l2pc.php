@@ -14,7 +14,7 @@ $delStr=''; // delete substring in file url. for sites that redirect the downloa
 $updateHours=5; //How often the cache is updated (in hours), default 5
 
 /* not touch */
-require('links2podcast.php');
+require('core/links2podcast.php');
 $l2pc=new PodcastCreatorFromLinks($page);
 $l2pc->setTitle($title);
 $l2pc->setDesc($desc);
@@ -22,6 +22,6 @@ $l2pc->setType($type);
 $l2pc->setExcludeLink($exclude);
 $l2pc->setDelType($delType);
 $l2pc->setImage($image);
-$feed2podcast->setDelStr($delStr);
-$feed2podcast->setUpdateHours($updateHours);
+$l2pc->setDelStr($delStr);
+$l2pc->setUpdateHours($updateHours);
 $l2pc->getFeed();
