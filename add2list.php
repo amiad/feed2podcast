@@ -11,7 +11,7 @@ $list='list.txt';
 <?php
 if($_POST['submit']){
 	echo '<p id="message">The link added</p>';
-	file_put_contents($list,"$_POST['url']|$_POST['title']", FILE_APPEND);
+	file_put_contents($list,$_POST['url'].'|'.$_POST['title'], FILE_APPEND);
 }
 ?>
 <form method="post">
