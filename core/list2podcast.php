@@ -10,7 +10,7 @@ class PodcastCreatorFromList extends Convert2Podcast{
 	}
 
 	public function processFeed() {
-		$list=$this->list;
+		$list=$this->source;
 		$type=$this->type;
 		$lines=file($list);
 		$feed_str="<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
