@@ -24,7 +24,7 @@ class PodcastCreatorFromList extends Convert2Podcast{
 		$sxe = new SimpleXMLElement($feed_str);
 		$sxe=$this->addImage($sxe);
 		foreach ($lines as $line) {
-			$list($file,$title)=explode("|",$line);
+			list($file,$title)=explode("|",$line);
 			$item=$sxe->channel->addChild('item');
 			$item->addChild('title',$title);
 			$item->addChild('description',$title);
