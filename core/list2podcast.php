@@ -18,7 +18,7 @@ class PodcastCreatorFromList extends Convert2Podcast{
 		<channel>
 		<title>$this->title</title>
 		<description>$this->desc</description>
-		<link>$page</link>
+		<link>$list</link>
 		</channel>
 		</rss>";
 		$sxe = new SimpleXMLElement($feed_str);
