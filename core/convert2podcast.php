@@ -25,6 +25,7 @@ abstract class Convert2Podcast {
 	}
 	
 	public function setType($type){
+		if(!$type) $type='mp3';
 		if(!is_array($type)) $this->type=array($type);
 		else $this->type=$type;
 	}
